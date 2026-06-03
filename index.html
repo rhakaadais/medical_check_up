@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Sistem Informasi Lab Kesehatan</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 30px; background-color: #f4f7f6; }
+        h1, h2 { color: #333; }
+        .container { display: flex; gap: 20px; }
+        .box { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .form-box { width: 30%; }
+        .table-box { width: 70%; }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th, td { border: 1px solid #ddd; padding: 10px; text-align: left; }
+        th { background-color: #4CAF50; color: white; }
+        input, select { width: 100%; padding: 8px; margin: 8px 0; box-sizing: border-box; }
+        button { background-color: #4CAF50; color: white; padding: 10px; border: none; width: 100%; cursor: pointer; font-weight: bold; }
+        button:hover { background-color: #45a049; }
+    </style>
+</head>
+<body>
+
+    <h1>🏥 Sistem Pendataan Laboratorium Kesehatan</h1>
+    <hr>
+
+    <div class="container">
+        <div class="box form-box">
+            <h2>Pendaftaran Pasien</h2>
+            <form action="/tambah" method="POST">
+                <label>Nama Pasien:</label>
+                <input type="text" name="nama" required>
+                
+                <label>Jenis Kelamin:</label>
+                <select name="jk">
+                    <option value="Laki-laki">Laki-laki</option>
+                    <option value="Perempuan">Perempuan</option>
+                </select>
+                
+                <label>Umur (Tahun):</label>
+                <input type="number" name="umur" required>
+                
+                <label>Jenis Pemeriksaan:</label>
+                <input type="text" name="pemeriksaan" placeholder="Contoh: Darah Lengkap, Urine" required>
+                
+                <button type="submit">Daftarkan Pasien</button>
+            </form>
+        </div>
+
+        <div class="box table-box">
+            <h2>Data & Antrean Pasien</h2>
+            <table>
+                <tr>
+                    <th>ID</th>
+                    <th>Nama Pasien</th>
+                    <th>Pemeriksaan</th>
+                    <th>Status MCU</th>
+                    <th>Hasil Lab / Tindakan</th>
+                </tr>
+                {% for p in pasien %}
+                <tr>
+                    <td>{{ p.id_pasien }}</td>
+                    <td><b>{{ p.nama_pasien }}</b><br><small>{{ p.jenis_kelamin }}, {{ p.umur }} Thn</small></td>
+                    <td>{{ p.jenis_pemeriksaan }}</td>
+                    <td><b>{{ p.status_mcu }}</b></td>
+                    <td>
+                        <form action="/update/{{ p.id_pasien }}" method="POST">
+                            <select name="status" style="width: auto; padding: 2px;">
+                                <option value="Belum MCU" {% if p.status_mcu == 'Belum MCU' %}selected{% endif %}>Belum MCU</option>
+                                <option value="Sudah MCU" {% if p.status_mcu == 'Sudah MCU' %}selected{% endif %}>Sudah MCU</option>
+                            </select>
+                            <input type="text" name="hasil" value="{{ p.hasil_lab }}" placeholder="Isi hasil lab di sini" style="width: 50%; padding: 4px; margin: 0 5px;">
+                            <button type="submit" style="width: auto; padding: 4px 10px; display: inline-block;">Simpan</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+    </div>
+
+</body>
+</html>
